@@ -26,7 +26,7 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_SPACE] or keys[pg.K_UP] or keys[pg.K_w]:
             self.jump()
         if keys[pg.K_DOWN]:
-            self.acc.y += PLAYER_ACC * 4
+            self.acc.y += PLAYER_ACC
         # apply friction
         self.acc.x += self.vel.x * PLAYER_FRICTION
         # equations of motion
@@ -53,6 +53,17 @@ class Platform(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
         self.game = game
         self.groups = game.all_sprites, game.platforms
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = pg.Surface((w,h))
+        self.image.fill(darkBlue)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+class Ground(pg.sprite.Sprite):
+    def __init__(self, game, x, y, w, h):
+        self.game = game
+        self.groups = game.all_sprites, game.ground
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((w,h))
         self.image.fill(darkBlue)
