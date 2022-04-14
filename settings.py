@@ -22,16 +22,16 @@ TITLE = "Runner" #Sets title
 FONT_NAME = 'arial'
 
 # screen size
-WIDTH = 480 #sets width of screen
-HEIGHT = 600 #sets height of screen
+WIDTH = 1042 #sets width of screen
+HEIGHT = 480 #sets height of screen
 
 # Player Size
-PLAYER_HEIGHT = 32
-PLAYER_WIDTH = 32
+PLAYER_HEIGHT = HEIGHT / 15
+PLAYER_WIDTH = PLAYER_HEIGHT
 
 #player properties
-PLAYER_ACC = 1
-PLAYER_FRICTION = -.12
+PLAYER_ACC = 1.25
+PLAYER_FRICTION = -.10
 PLAYER_GRAV = 0.8
 PLAYER_JUMP = 20
 
