@@ -56,18 +56,10 @@ class Game:
                 plat.kill()
 
         # spawn new platforms to keep same average number
-        while len(self.platforms) < 8:
-            self.platx = random.randrange(WIDTH + 500, WIDTH + 1500)
-            self.lastx = 5000
+        while len(self.platforms) < 5:
+            self.platx = random.randrange(WIDTH + 300, WIDTH + 2000)
             self.platy =  random.randrange(50, 400)
-            self.lasty = 5000
 
-            while (self.lastx - self.platx) < 250 and (self.lasty - self.platy) < 250:
-                self.platx = random.randrange(WIDTH + 500, WIDTH + 1500)
-                self.platy = random.randrange(50, 400)
-            self.lastx = self.platx
-            self.lasty = self.platy
-            print(self.lasty)
             Platform(self, self.platx, self.platy, 200, 20)
 
 
