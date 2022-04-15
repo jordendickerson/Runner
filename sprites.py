@@ -14,19 +14,22 @@ class Player(pg.sprite.Sprite):
         self.vel = vec(0,0)
         self.acc = vec(0,0)
 
+        self.jumping = False
+        self.sliding = False
+
     def update(self):
         self.acc = vec(0,PLAYER_GRAV)
         #get key pressed
         keys = pg.key.get_pressed()
         #key functions
         if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.acc.x = -PLAYER_ACC
+            self.acc.x = -PLAYER_ACC - 1
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.acc.x = PLAYER_ACC
         if keys[pg.K_SPACE] or keys[pg.K_UP] or keys[pg.K_w]:
             self.jump()
-        if keys[pg.K_DOWN]:
-            self.acc.y += PLAYER_ACC
+        if keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.acc.y += PLAYER_ACC * 2
         # apply friction
         self.acc.x += self.vel.x * PLAYER_FRICTION
         # equations of motion
@@ -39,20 +42,29 @@ class Player(pg.sprite.Sprite):
             self.pos.x = WIDTH
         if self.pos.x < 0:
             self.pos.x = 0
+        if self.pos.y < 20:
+            self.pos.y = 20
+            self.vel.y = 0.25
         self.rect.midbottom = self.pos
 
     def jump(self):
         self.rect.x += 1
-        hits = pg.sprite.spritecollide(self, self.game.platforms, False)
+        hits = pg.sprite.spritecollide(self, self.game.all_platforms, False)
         self.rect.x -= 1
-        if hits:
+        if hits and not self.jumping:
+            self.jumping = True
             self.acc.y += -PLAYER_JUMP
+
+    def jump_cut(self):
+        if self.jumping:
+            if self.vel.y < -2:
+                self.vel.y = -2
 
 
 class Platform(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
         self.game = game
-        self.groups = game.all_sprites, game.platforms
+        self.groups = game.all_sprites, game.platforms, game.all_platforms
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((w,h))
         self.image.fill(darkBlue)
@@ -63,7 +75,7 @@ class Platform(pg.sprite.Sprite):
 class Ground(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
         self.game = game
-        self.groups = game.all_sprites, game.ground
+        self.groups = game.all_sprites, game.ground, game.all_platforms
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((w,h))
         self.image.fill(darkBlue)

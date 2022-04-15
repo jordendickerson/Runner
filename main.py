@@ -1,6 +1,7 @@
 from settings import *
 from sprites import *
 import pygame as pg
+import random
 
 #YOU MUST INSTALL PYGAME ON YOUR COMPUTER FOR THIS GAME TO RUN
 
@@ -11,14 +12,18 @@ class Game:
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
+        self.spawning = False
         self.running = True
 
     def new(self):
         self.all_sprites = pg.sprite.Group()
+        self.all_platforms = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.ground = pg.sprite.Group()
         self.player = Player(self)
         g = Ground(self, 0, HEIGHT - 40, 1100, 40)
+        for plat in PLATFORM_LIST:
+            Platform(self, *plat)
         self.run()
 
     def run(self):
@@ -34,11 +39,37 @@ class Game:
         self.all_sprites.update()
         # check if player hits a platform - only if falling
         if self.player.vel.y > 0:
-            groups = self.platforms
-            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            #player stands on top of platform
+            hits = pg.sprite.spritecollide(self.player, self.all_platforms, False)
             if hits:
+                self.player.jumping = False
                 self.player.pos.y = hits[0].rect.top
                 self.player.vel.y = 0
+            #move player with platform if standin on one
+            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            if hits and not self.player.sliding:
+                self.player.pos.x -= PLATFORM_SPEED
+        #move and kill platforms
+        for plat in self.platforms:
+            plat.rect.x -= PLATFORM_SPEED
+            if plat.rect.x < -600:
+                plat.kill()
+
+        # spawn new platforms to keep same average number
+        while len(self.platforms) < 8:
+            self.platx = random.randrange(WIDTH + 500, WIDTH + 1500)
+            self.lastx = 5000
+            self.platy =  random.randrange(50, 400)
+            self.lasty = 5000
+
+            while (self.lastx - self.platx) < 250 and (self.lasty - self.platy) < 250:
+                self.platx = random.randrange(WIDTH + 500, WIDTH + 1500)
+                self.platy = random.randrange(50, 400)
+            self.lastx = self.platx
+            self.lasty = self.platy
+            print(self.lasty)
+            Platform(self, self.platx, self.platy, 200, 20)
+
 
     def events(self):
         for event in pg.event.get():
@@ -46,6 +77,15 @@ class Game:
                 if self.playing:
                     self.playing = False
                 self.running = False
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_DOWN or event.key == pg.K_s:
+                    self.player.sliding = True
+            if event.type == pg.KEYUP:
+                if event.key == pg.K_SPACE or event.key == pg.K_w or event.key == pg.K_UP:
+                    # self.player.jump_cut()
+                    pass
+                if event.key == pg.K_DOWN or event.key == pg.K_s:
+                    self.player.sliding = False
 
     def draw(self):
         #Draw sprites
