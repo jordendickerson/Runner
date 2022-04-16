@@ -41,12 +41,19 @@ FPS = 60 #sets frames per second (clock tick)
 
 # difficulty
 diff = "Normal" #sets difficulty
-PLATFORM_SPEED = 8
+PLATFORM_SPEED = 10
 PLATFORM_LIST = ((WIDTH+300, HEIGHT / 2, 250, 20),
-                 (WIDTH +750, HEIGHT / 4, 200, 20),
-                 (WIDTH +1250, HEIGHT * (3 / 4), 200, 20),
-                 (WIDTH + 1750, HEIGHT * (5/8), 300, 20),
-                 (WIDTH + 2500, HEIGHT * (3/8), 250, 20))
+                 (WIDTH +300, HEIGHT / 4, 200, 20),
+                 (WIDTH +300, HEIGHT * (3 / 4), 200, 20),
+                 (WIDTH + 300, HEIGHT * (5/8), 300, 20),
+                 (WIDTH + 300, HEIGHT * (3/8), 250, 20))
+#pipes
+PIPE_1 = ((WIDTH + 275, -250, 20, 400),
+          (WIDTH + 275, 300, 20, 400))
+PIPE_2 = ((WIDTH + 275, -300, 20, 400),
+          (WIDTH + 275, 250, 20, 400))
+PIPE_3 = ((WIDTH + 275, -200, 20, 400),
+          (WIDTH + 275, 350, 20, 400))
 
 
 # Colors (R,G,B)

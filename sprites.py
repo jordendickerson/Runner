@@ -27,9 +27,11 @@ class Player(pg.sprite.Sprite):
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
             self.acc.x = PLAYER_ACC
         if keys[pg.K_SPACE] or keys[pg.K_UP] or keys[pg.K_w]:
-            self.jump()
+            self.jump(1)
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.acc.y += PLAYER_ACC * 2
+        if keys[pg.K_DOWN] and keys[pg.K_SPACE]:
+            self.jump(1.5)
         # apply friction
         self.acc.x += self.vel.x * PLAYER_FRICTION
         # equations of motion
@@ -40,20 +42,21 @@ class Player(pg.sprite.Sprite):
         # stop player from leaving the screen
         if self.pos.x > (WIDTH):
             self.pos.x = WIDTH
-        if self.pos.x < 0:
-            self.pos.x = 0
+        if self.pos.x < -PLAYER_WIDTH:
+            self.pos.x = -PLAYER_WIDTH
+            self.pos.y = 60
         if self.pos.y < 20:
             self.pos.y = 20
             self.vel.y = 0.25
         self.rect.midbottom = self.pos
 
-    def jump(self):
+    def jump(self, mult):
         self.rect.x += 1
         hits = pg.sprite.spritecollide(self, self.game.all_platforms, False)
         self.rect.x -= 1
         if hits and not self.jumping:
             self.jumping = True
-            self.acc.y += -PLAYER_JUMP
+            self.acc.y += -PLAYER_JUMP * mult
 
     def jump_cut(self):
         if self.jumping:
@@ -65,6 +68,17 @@ class Platform(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
         self.game = game
         self.groups = game.all_sprites, game.platforms, game.all_platforms
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = pg.Surface((w,h))
+        self.image.fill(darkBlue)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+class Pipe(pg.sprite.Sprite):
+    def __init__(self, game, x, y, w, h):
+        self.game = game
+        self.groups = game.all_sprites, game.pipes, game.all_platforms
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.Surface((w,h))
         self.image.fill(darkBlue)
