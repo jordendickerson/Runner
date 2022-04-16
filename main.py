@@ -59,7 +59,7 @@ class Game:
             #move player back if hitting pipe
             hits = pg.sprite.spritecollide(self.player, self.pipes, False)
             if hits:
-                self.player.vel.x -= 10
+                self.player.vel.x -= PLATFORM_SPEED
 
         #move and kill platforms
         for plat in self.platforms:
