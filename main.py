@@ -22,6 +22,18 @@ class Game:
     def load_data(self):
         self.map = Map(path.join(maps_Folder, 'card1.txt'))
 
+    def create_map(self, map):
+        for row, tiles in enumerate(map.data):
+            for col, tile in enumerate(tiles):
+                if tile == '1':
+                    Wall(self, col, row, (self.ground, self.all_platforms), GREEN)
+                if tile == '2':
+                    Wall(self, col, row, (self.deadly_platforms, self.all_platforms), RED)
+                if tile == "T":
+                    Trigger(self, col, row,(self.all_platforms, self.triggers))
+                if tile == "P":
+                    self.player = Player(self, col, row)
+
     def quit(self):
         pg.quit()
         sys.exit()
@@ -32,17 +44,11 @@ class Game:
         self.ground = pg.sprite.Group()
         self.all_platforms = pg.sprite.Group()
         self.deadly_platforms = pg.sprite.Group()
+        self.triggers = pg.sprite.Group()
         #call load data
         self.load_data()
         #create map
-        for row, tiles in enumerate(self.map.data):
-            for col, tile in enumerate(tiles):
-                if tile == '1':
-                    Wall(self, col, row, (self.ground, self.all_platforms), GREEN)
-                if tile == '2':
-                    Wall(self, col, row, (self.deadly_platforms, self.all_platforms), RED)
-                if tile == "P":
-                    self.player = Player(self, col, row)
+        self.create_map(self.map)
         self.run()
 
     def run(self):
@@ -68,7 +74,12 @@ class Game:
                 self.player.jumping = False
                 self.player.pos.y = hits[0].rect.top
                 self.player.vel.y = 0
-
+        #if trigger comes on screen, kill it and spawn another card
+        for trigger in self.triggers:
+            if trigger.rect.x < WIDTH:
+                trigger.kill()
+                map = Map(path.join(maps_Folder, 'card2.txt'))
+                self.create_map(map)
         #check for collisions between player and deadly objects / platforms
         hits = pg.sprite.spritecollide(self.player, self.deadly_platforms, False)
         if hits:
@@ -96,7 +107,7 @@ class Game:
         self.screen.fill(GRAY)
         self.all_sprites.draw(self.screen)
         # Draw grid
-        self.draw_grid()
+        # self.draw_grid()
         #after drawing, flip display
         pg.display.flip()
 

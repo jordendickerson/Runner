@@ -34,7 +34,7 @@ PLAYER_JUMP = 16
 PLAYER_SPEED = 300
 
 #platform properties
-PLATFORM_SPEED = 8
+PLATFORM_SPEED = 5
 
 # clock speed
 FPS = 60 #sets frames per second (clock tick)
