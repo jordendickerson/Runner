@@ -3,26 +3,6 @@ from settings import *
 from tilemap import collide_hit_rect
 vec = pg.math.Vector2
 
-def collide_with_walls(sprite, group, dir):
-    if dir == 'x':
-        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-        if hits:
-            if hits[0].rect.centerx > sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 2
-            if hits[0].rect.centerx < sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 2
-            sprite.vel.x = 0
-            sprite.hit_rect.centerx = sprite.pos.x
-    if dir == 'y':
-        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-        if hits:
-            if hits[0].rect.centery > sprite.hit_rect.centery:
-                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 2
-            if hits[0].rect.centery < sprite.hit_rect.centery:
-                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 2
-            sprite.vel.y = 0
-            sprite.hit_rect.centery = sprite.pos.y
-
 class Player(pg.sprite.Sprite):
     def __init__(self, game, x, y):
         self.game = game
@@ -42,20 +22,20 @@ class Player(pg.sprite.Sprite):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                if self.acc.x > 0:
-                    self.pos.x = hits[0].rect.left - self.rect.width
-                if self.acc.x < 0:
+                if self.vel.x > 0 and hits[0].rect.top > self.rect.centery and hits[0].rect.bottom < self.rect.centery:
+                    self.pos.x = hits[0].rect.left
+                if self.vel.x < 0 and hits[0].rect.top > self.rect.centery and hits[0].rect.bottom < self.rect.centery:
                     self.pos.x = hits[0].rect.right
-                self.acc.x = 0
+                self.vel.x = 0
                 self.rect.x = self.pos.x
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
-                if self.acc.y > 0:
-                    self.pos.y = hits[0].rect.top - self.rect.height
-                if self.acc.y < 0:
+                if self.vel.y > 0:
+                    self.pos.y = hits[0].rect.top
+                if self.vel.y < 0:
                     self.pos.y = hits[0].rect.bottom
-                self.acc.y = 0
+                self.vel.y = 0
                 self.rect.y = self.pos.y
 
     def get_keys(self):
@@ -92,14 +72,11 @@ class Player(pg.sprite.Sprite):
         if abs(self.vel.x) < 0.1:
             self.vel.x = 0
         self.pos += self.vel + 0.5 * self.acc
-        self.collide_with_walls('x')
-        self.collide_with_walls('y')
         # stop player from leaving the screen
         if self.pos.x > (WIDTH):
             self.pos.x = WIDTH
-        if self.pos.x < -PLAYER_WIDTH:
-            self.pos.x = -PLAYER_WIDTH
-            self.pos.y = 60
+        if self.pos.x < 0:
+            self.pos.x = 0
         if self.pos.y < 20:
             self.pos.y = 20
             self.vel.y = 0.25
@@ -107,7 +84,7 @@ class Player(pg.sprite.Sprite):
 
     def jump(self):
         self.rect.x += 1
-        hits = pg.sprite.spritecollide(self, self.game.walls, False)
+        hits = pg.sprite.spritecollide(self, self.game.all_platforms, False)
         self.rect.x -= 1
         if hits and not self.jumping:
             self.jumping = True
@@ -120,12 +97,12 @@ class Player(pg.sprite.Sprite):
 
 
 class Wall(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.walls
+    def __init__(self, game, x, y, group, color):
+        self.groups = game.all_sprites, group
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
+        self.image.fill(color)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

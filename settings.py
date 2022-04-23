@@ -27,11 +27,14 @@ PLAYER_HEIGHT = HEIGHT / 15
 PLAYER_WIDTH = PLAYER_HEIGHT
 
 #player properties
-PLAYER_ACC = 1.25
-PLAYER_FRICTION = -.075
+PLAYER_ACC = 1
+PLAYER_FRICTION = -.1
 PLAYER_GRAV = 0.8
-PLAYER_JUMP = 20
+PLAYER_JUMP = 16
 PLAYER_SPEED = 300
+
+#platform properties
+PLATFORM_SPEED = 8
 
 # clock speed
 FPS = 60 #sets frames per second (clock tick)

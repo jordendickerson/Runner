@@ -29,14 +29,18 @@ class Game:
     def new(self):
         #sprite groups
         self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
+        self.ground = pg.sprite.Group()
+        self.all_platforms = pg.sprite.Group()
+        self.deadly_platforms = pg.sprite.Group()
         #call load data
         self.load_data()
         #create map
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    Wall(self, col, row)
+                    Wall(self, col, row, (self.ground, self.all_platforms), GREEN)
+                if tile == '2':
+                    Wall(self, col, row, (self.deadly_platforms, self.all_platforms), RED)
                 if tile == "P":
                     self.player = Player(self, col, row)
         self.run()
@@ -50,6 +54,25 @@ class Game:
             self.draw()
 
     def update(self):
+        #move the map
+        for plat in self.all_platforms:
+            plat.rect.x -= PLATFORM_SPEED
+            #delete tile when it moves off screen. there is no going back
+            if plat.rect.x < -100:
+                plat.kill()
+        # check if player hits a platform - only if falling
+        if self.player.vel.y > 0:
+            # player stands on top of platform
+            hits = pg.sprite.spritecollide(self.player, self.ground, False)
+            if hits:
+                self.player.jumping = False
+                self.player.pos.y = hits[0].rect.top
+                self.player.vel.y = 0
+
+        #check for collisions between player and deadly objects / platforms
+        hits = pg.sprite.spritecollide(self.player, self.deadly_platforms, False)
+        if hits:
+            self.playing = False
         #Update loops
         self.all_sprites.update()
 
@@ -68,7 +91,7 @@ class Game:
             pg.draw.line(self.screen, LIGHTGRAY, (0, y), (WIDTH, y))
 
     def draw(self):
-
+        pg.display.set_caption("{:.2f}".format(self.clock.get_fps()))
         #Draw sprites
         self.screen.fill(GRAY)
         self.all_sprites.draw(self.screen)
