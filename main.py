@@ -45,6 +45,7 @@ class Game:
         self.all_platforms = pg.sprite.Group()
         self.deadly_platforms = pg.sprite.Group()
         self.triggers = pg.sprite.Group()
+        self.bullets = pg.sprite.Group()
         #call load data
         self.load_data()
         #create map

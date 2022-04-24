@@ -36,6 +36,11 @@ PLAYER_SPEED = 300
 #platform properties
 PLATFORM_SPEED = 5
 
+#Bullet Properties
+BULLET_SPEED = 15
+BARREL_OFFSET = 22
+FIRE_RATE = 200
+
 # clock speed
 FPS = 60 #sets frames per second (clock tick)
 
