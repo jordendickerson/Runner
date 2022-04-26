@@ -18,9 +18,10 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         self.running = True
+        self.paused = False
 
     def load_data(self):
-        self.map = Map(path.join(maps_Folder, 'card1.txt'))
+        self.map = Map(path.join(maps_Folder, 'ground.txt'))
 
     def create_map(self, map):
         for row, tiles in enumerate(map.data):
@@ -29,6 +30,8 @@ class Game:
                     Wall(self, col, row, (self.ground, self.all_platforms), GREEN)
                 if tile == '2':
                     Wall(self, col, row, (self.deadly_platforms, self.all_platforms), RED)
+                if tile == '3':
+                    Wall(self, col, row, (self.deadly_platforms, self.shootable_platforms, self.all_platforms), ORANGE)
                 if tile == "T":
                     Trigger(self, col, row,(self.all_platforms, self.triggers))
                 if tile == "P":
@@ -44,6 +47,7 @@ class Game:
         self.ground = pg.sprite.Group()
         self.all_platforms = pg.sprite.Group()
         self.deadly_platforms = pg.sprite.Group()
+        self.shootable_platforms = pg.sprite.Group()
         self.triggers = pg.sprite.Group()
         self.bullets = pg.sprite.Group()
         #call load data
@@ -57,7 +61,8 @@ class Game:
         while self.playing:
             self.dt = self.clock.tick(FPS)/1000
             self.events()
-            self.update()
+            if not self.paused:
+                self.update()
             self.draw()
 
     def update(self):
@@ -79,12 +84,16 @@ class Game:
         for trigger in self.triggers:
             if trigger.rect.x < WIDTH:
                 trigger.kill()
-                map = Map(path.join(maps_Folder, 'card2.txt'))
+                map = Map(path.join(maps_Folder, random.choice(CARD_LIST)))
                 self.create_map(map)
         #check for collisions between player and deadly objects / platforms
         hits = pg.sprite.spritecollide(self.player, self.deadly_platforms, False)
         if hits:
             self.playing = False
+        #check bullets colliding with shootable platforms
+        hits = pg.sprite.groupcollide(self.bullets, self.shootable_platforms, True, True)
+        # check for bullets colliding with all platforms
+        hits = pg.sprite.groupcollide(self.bullets, self.all_platforms, True, False)
         #Update loops
         self.all_sprites.update()
 
@@ -94,7 +103,7 @@ class Game:
                 self.quit()
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    self.quit()
+                    self.paused = not self.paused
 
     def draw_grid(self):
         for x in range(0, WIDTH, TILESIZE):

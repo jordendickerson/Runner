@@ -39,7 +39,10 @@ PLATFORM_SPEED = 5
 #Bullet Properties
 BULLET_SPEED = 15
 BARREL_OFFSET = 22
-FIRE_RATE = 200
+FIRE_RATE = 150
+
+#cards
+CARD_LIST = ['card1.txt', 'card2.txt']
 
 # clock speed
 FPS = 60 #sets frames per second (clock tick)
@@ -54,6 +57,7 @@ GRAY = (50,50,50)
 LIGHTGRAY = (100,100,100)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+ORANGE = (255, 155, 0)
 GREEN = (0, 255 ,0)
 BLUE = (0, 0 ,255)
 YELLOW = (255, 255, 0)
