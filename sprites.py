@@ -52,6 +52,7 @@ class Player(pg.sprite.Sprite):
             self.jump()
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.acc.y += PLAYER_ACC * 2
+            self.acc.x += PLAYER_ACC * 1.2
         if keys[pg.K_SPACE]:
             self.shoot()
 
