@@ -20,8 +20,38 @@ class Game:
         self.running = True
         self.paused = False
 
+    def draw_text(self, text, font_name, size, color, x, y, align="nw"):
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        if align == "nw":
+            text_rect.topleft = (x, y)
+        if align == "ne":
+            text_rect.topright = (x, y)
+        if align == "sw":
+            text_rect.bottomleft = (x, y)
+        if align == "se":
+            text_rect.bottomright = (x, y)
+        if align == "n":
+            text_rect.midtop = (x, y)
+        if align == "s":
+            text_rect.midbottom = (x, y)
+        if align == "e":
+            text_rect.midright = (x, y)
+        if align == "w":
+            text_rect.midleft = (x, y)
+        if align == "center":
+            text_rect.center = (x, y)
+        self.screen.blit(text_surface, text_rect)
+
     def load_data(self):
+        #load map
         self.map = Map(path.join(maps_Folder, 'ground.txt'))
+        #fonts
+        self.title_font = path.join(assets_Folder, 'Pixeboy.ttf')
+        #create screen dimmer
+        self.dim_screen = pg.Surface(self.screen.get_size()).convert_alpha()
+        self.dim_screen.fill((0, 0, 0, 180))
 
     def create_map(self, map):
         for row, tiles in enumerate(map.data):
@@ -118,6 +148,10 @@ class Game:
         self.all_sprites.draw(self.screen)
         # Draw grid
         # self.draw_grid()
+        #pause screen
+        if self.paused:
+            self.screen.blit(self.dim_screen, (0,0))
+            self.draw_text('Paused', self.title_font,105, RED, WIDTH / 2, HEIGHT / 2, align='center')
         #after drawing, flip display
         pg.display.flip()
 

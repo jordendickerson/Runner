@@ -52,7 +52,9 @@ class Player(pg.sprite.Sprite):
             self.jump()
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.acc.y += PLAYER_ACC * 2
-            self.acc.x += PLAYER_ACC * 1.2
+        hits = pg.sprite.spritecollide(self, self.game.all_platforms, False)
+        if keys[pg.K_DOWN] or keys[pg.K_s] and hits:
+            self.acc.x += PLAYER_ACC * .3
         if keys[pg.K_SPACE]:
             self.shoot()
 
@@ -152,7 +154,7 @@ class Bullet(pg.sprite.Sprite):
     def update(self):
         self.rect.centery += self.speed_y
         self.rect.centerx -= self.speed_x
-        if self.rect.bottom < -15:
+        if self.rect.x > WIDTH:
             self.kill()
 
 
