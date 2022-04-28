@@ -19,6 +19,8 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.paused = False
+        self.title_font = path.join(assets_Folder, 'Pixeboy.ttf')
+        self.plat_speed = PLATFORM_SPEED
 
     def draw_text(self, text, font_name, size, color, x, y, align="nw"):
         font = pg.font.Font(font_name, size)
@@ -98,7 +100,7 @@ class Game:
     def update(self):
         #move the map
         for plat in self.all_platforms:
-            plat.rect.x -= PLATFORM_SPEED
+            plat.rect.x -= self.plat_speed
             #delete tile when it moves off screen. there is no going back
             if plat.rect.x < -100:
                 plat.kill()
@@ -157,11 +159,39 @@ class Game:
 
     def show_start_screen(self):
         # game splash/start screen
-        pass
+        self.screen.fill(skyBlue)
+        self.draw_text(TITLE, self.title_font, 150, BLACK, WIDTH / 2, HEIGHT / 4, align='center')
+        self.draw_text("Arrows to move and jump",self.title_font, 40, GRAY, WIDTH / 2, HEIGHT / 2, align='center')
+        self.draw_text("Press 1 for Normal, 2 for Hard, 3 for Extra Hard",self.title_font, 40, GRAY, WIDTH / 2, HEIGHT * 3 / 4, align='center')
+        pg.display.flip()
+        self.waitForKey()
 
     def show_go_screen(self):
         # game over/continue
-        pass
+        self.screen.fill(skyBlue)
+        self.draw_text("GAME OVER", self.title_font, 125, RED, WIDTH / 2, HEIGHT / 4, align='center')
+        self.draw_text("Press 1 for Normal, 2 for Hard, 3 for Extra Hard",self.title_font, 40, GRAY, WIDTH / 2, HEIGHT * 3 / 4, align='center')
+        pg.display.flip()
+        self.waitForKey()
+
+    def waitForKey(self):
+        waiting = True
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.running = False
+                    waiting = False
+                if event.type == pg.KEYUP:
+                    if event.key == pg.K_1:
+                        self.plat_speed = PLATFORM_SPEED
+                        waiting = False
+                    if event.key == pg.K_2:
+                        self.plat_speed = PLATFORM_SPEED * 2
+                        waiting = False
+                    if event.key == pg.K_3:
+                        self.plat_speed = PLATFORM_SPEED * 2.5
+                        waiting = False
 
 g = Game()
 g.show_start_screen()

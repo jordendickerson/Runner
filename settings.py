@@ -42,7 +42,7 @@ BARREL_OFFSET = 22
 FIRE_RATE = 150
 
 #cards
-CARD_LIST = ['card1.txt', 'card2.txt']
+CARD_LIST = ['card1.txt', 'card2.txt', 'card3.txt', 'card4.txt', 'card5.txt', 'card6.txt']
 
 # clock speed
 FPS = 60 #sets frames per second (clock tick)
