@@ -6,7 +6,7 @@ As you run, you must stay on the green tiles. If you touch the red or orange, ga
 Shoot orange tiles to break them!
 
 ### **CONTROLS**
-*Left and Right arrow keys* - Move left and right
-*Up Arrow Key* - Jump
-*Down Arrow Key* - Dive
-*Space* - Shoot
+- *Left and Right arrow keys* - Move left and right
+- *Up Arrow Key* - Jump
+- *Down Arrow Key* - Dive
+- *Space* - Shoot
